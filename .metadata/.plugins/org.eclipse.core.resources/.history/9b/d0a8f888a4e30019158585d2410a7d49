@@ -1,0 +1,80 @@
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import java.util.Random;
+
+public class MAxMin {
+
+	protected Shell shlMaxmin;
+
+	/**
+	 * Launch the application.
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			MAxMin window = new MAxMin();
+			window.open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Open the window.
+	 */
+	public void open() {
+		Display display = Display.getDefault();
+		createContents();
+		shlMaxmin.open();
+		shlMaxmin.layout();
+		while (!shlMaxmin.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+	}
+
+	/**
+	 * Create contents of the window.
+	 */
+	protected void createContents() {
+		shlMaxmin = new Shell();
+		shlMaxmin.setSize(155, 231);
+		shlMaxmin.setText("Max Min by TishamI");
+		
+		int[] numbers = new int[10];
+		Random numGen = new Random();
+		
+		Label lblArray = new Label(shlMaxmin, SWT.NONE);
+		lblArray.setBounds(91, 35, 38, 144);
+		
+		Label lblMin = new Label(shlMaxmin, SWT.NONE);
+		lblMin.setBounds(10, 87, 55, 15);
+		lblMin.setText("Min:");
+		
+		Label lblMax = new Label(shlMaxmin, SWT.NONE);
+		lblMax.setBounds(10, 147, 55, 15);
+		lblMax.setText("Max:");
+		
+		Button btnGenerate = new Button(shlMaxmin, SWT.NONE);
+		btnGenerate.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				for (int i = 0; i < numbers.length; i++) {
+					numbers[i] = numGen.nextInt(100);
+					lblArray.setText(lblArray.getText() + numbers[i] + "\r\n");
+				}
+			}
+		});
+		btnGenerate.setBounds(10, 30, 75, 25);
+		btnGenerate.setText("Generate");
+
+	}
+}

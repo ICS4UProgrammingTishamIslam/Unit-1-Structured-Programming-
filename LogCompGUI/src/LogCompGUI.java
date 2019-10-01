@@ -52,7 +52,7 @@ public class LogCompGUI {
 	protected void createContents() {
 		shell = new Shell();
 		shell.setSize(450, 300);
-		shell.setText("SWT Application");
+		shell.setText("LogCompGUI by TishamI");
 		shell.setLayout(null);
 
 		final double carryWeight = 1100;

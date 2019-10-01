@@ -1,0 +1,290 @@
+/*
+ * Created by: Tisham Islam
+ * Created on: 24-Sep-2019
+ * Created for: ICS4U
+ * Assignment #1b (String Stuff)
+ * This is a program that calculates max and min run, and blows up a string based on the numbers and letters you input into it
+*/
+
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+
+import java.io.*;		//for input/outputting files
+import java.util.*;		//for using a list
+import java.lang.*;		//for checking whitespace
+
+public class StringStuff {
+
+	protected Shell shlStringStuff;
+	private Text txtFileName;
+	
+	List<String> Lines = new ArrayList<String>();
+	List<String> OutLines = new ArrayList<String>();
+	private Text txtOutputText;
+
+	/**
+	 * Launch the application.
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			StringStuff window = new StringStuff();
+			window.open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Open the window.
+	 */
+	public void open() {
+		Display display = Display.getDefault();
+		createContents();
+		shlStringStuff.open();
+		shlStringStuff.layout();
+		while (!shlStringStuff.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+	}
+
+	/**
+	 * Create contents of the window.
+	 */
+	protected void createContents() {
+		shlStringStuff = new Shell();
+		shlStringStuff.setSize(450, 300);
+		shlStringStuff.setText("String Stuff by TishamI");
+
+		txtFileName = new Text(shlStringStuff, SWT.BORDER);
+		txtFileName.setText("thingy.txt");
+		txtFileName.setBounds(10, 29, 414, 21); 
+		
+		txtOutputText = new Text(shlStringStuff, SWT.BORDER);
+		txtOutputText.setText("output.txt");
+		txtOutputText.setBounds(10, 196, 414, 21);
+		
+		Button btnGetFile = new Button(shlStringStuff, SWT.NONE);
+		btnGetFile.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				Lines.clear();
+				 // The name of the file to open.
+		        String fileName = txtFileName.getText();
+
+		        // This will reference one line at a time
+		        String line = null;
+
+		        try {
+		            // FileReader reads text files in the default encoding.
+		            FileReader fileReader = 
+		                new FileReader(fileName);
+
+		            // Always wrap FileReader in BufferedReader.
+		            BufferedReader bufferedReader = 
+		                new BufferedReader(fileReader);
+
+		            while((line = bufferedReader.readLine()) != null) {
+		                System.out.println(line);
+		                Lines.add(line);
+		            }   
+
+		            // Always close files.
+		            bufferedReader.close();         
+		        }
+		        catch(FileNotFoundException ex) {
+		            System.out.println(
+		                "Unable to open file '" + 
+		                fileName + "'");                
+		        }
+		        catch(IOException ex) {
+		            System.out.println(
+		                "Error reading file '" 
+		                + fileName + "'");             
+		        }
+			}
+		});
+		btnGetFile.setBounds(152, 56, 75, 25);
+		btnGetFile.setText("GET FILE");
+		
+		Button btnMaxrun = new Button(shlStringStuff, SWT.NONE);
+		btnMaxrun.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				//use the max run function for every string
+				for (int i = 0; Lines.size() > i; i++) {
+					String inputs = Lines.get(i);
+					OutLines.add(MaxRun(inputs));
+				}
+				
+			}
+		});
+		btnMaxrun.setBounds(42, 154, 75, 25);
+		btnMaxrun.setText("MAXRUN");
+		
+		Button btnMinrun = new Button(shlStringStuff, SWT.NONE);
+		btnMinrun.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				//use the min run function for every string
+				for (int i = 0; Lines.size() > i; i++) {
+					String inputs = Lines.get(i);
+					OutLines.add(MinRun(inputs));
+				}
+				
+			}
+		});
+		btnMinrun.setBounds(152, 154, 75, 25);
+		btnMinrun.setText("MINRUN");
+		
+		Button btnBlowup = new Button(shlStringStuff, SWT.NONE);
+		btnBlowup.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		btnBlowup.setBounds(263, 154, 75, 25);
+		btnBlowup.setText("BLOWUP");
+		
+		Button btnSendText = new Button(shlStringStuff, SWT.NONE);
+		btnSendText.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				//File name
+				String fileName = txtOutputText.getText();
+				
+				//create a file
+				try {
+		            // Assume default encoding.
+		            FileWriter fileWriter =
+		                new FileWriter(fileName);
+
+		            // Always wrap FileWriter in BufferedWriter.
+		            BufferedWriter bufferedWriter =
+		                new BufferedWriter(fileWriter);
+
+		            // Note that write() does not automatically
+		            // append a newline character.
+		            for (int i = 0; OutLines.size() > i; i++) {
+						bufferedWriter.write(OutLines.get(i));
+						bufferedWriter.newLine();
+					}
+		            // Always close files.
+		            bufferedWriter.close();
+		        }
+		        catch(IOException ex) {
+		            System.out.println(
+		                "Error writing to file '"
+		                + fileName + "'");
+		            // Or we could just do this:
+		            // ex.printStackTrace();
+		        }
+				
+				//write to console
+				for (int i = 0; OutLines.size() > i; i++) {
+					System.out.println(OutLines.get(i));
+				}
+				//reset the output
+				OutLines.clear();
+			}
+		});
+		btnSendText.setBounds(152, 226, 75, 25);
+		btnSendText.setText("SEND TEXT");
+	}
+	
+	public static String MaxRun(String str){
+		int counter = 0;
+		int length = str.length();
+		int tmpMaxRun = 1;
+		int maxRun = 1;
+		String output = "";
+		char[] running = str.toCharArray();
+		
+		if (str == "") {
+			System.out.println("Max run is 0; No input given");
+			output = "Max run is 0; No input given";
+			return output;
+		}
+		
+		//main loop
+		while (counter < length - 1) {
+			//increment counter right away
+			counter++;
+
+			//if the current letter is the same as the previous, increase the current run count
+			if (running[counter] == running[counter - 1] ) {
+					tmpMaxRun++;
+				}
+			//otherwise, reset it to 1
+			else {
+					tmpMaxRun = 1;
+			}
+			//if the current run count is larger than the previous max, replace it
+			if (tmpMaxRun > maxRun) {
+				maxRun = tmpMaxRun;
+			}
+		}
+		
+		output = "" + maxRun;
+		
+		return output;
+	}
+	
+	public static String MinRun(String str){ 
+		//vars
+		int counter = 0;
+		int length = str.length();
+		int tmpMinRun = 1;
+		int minRun = 0;
+		String output = "";
+		char[] running = str.toCharArray();
+
+		//lack of input message
+		if (Character.isWhitespace(running[0]) && running.length == 1) {
+			System.out.println("Max run is 0; No input given");
+			output = "Max run is 0; No input given";
+			return output;
+		}
+
+		//main loop
+		while (counter < length - 1) {
+				//increment counter right away
+				counter++;
+				
+				//if the current letter is the same as the previous, increase the current run count
+				if (running[counter] == running[counter - 1] ) {
+					tmpMinRun++;
+				}
+				//if this run's count is smaller than the previous min, replace it
+				else if (tmpMinRun < minRun) {
+					minRun = tmpMinRun;
+				}
+				else {
+					//if the first minRun hasn’t been set, set it now
+					//if tmpMinRun is greater than 1, this makes sure the first minRun is accurate
+					if (minRun == 0) {
+						minRun = tmpMinRun;
+					}
+					tmpMinRun = 1;
+				}
+		}
+		//if there's only one char type, than this will set it as the only time minRun is reset is when the count is broken
+		//or if the last run is smaller than the running count, in which case it wouldn't have been accounted for
+		if (minRun == 0 || counter == length - 1 && tmpMinRun < minRun) {
+			minRun = tmpMinRun;
+		}
+		
+		//set output to minRun, then return it
+		output = "" + minRun;
+		return output;
+	}
+}
